@@ -144,7 +144,17 @@ def admin():
 def logout():
     session.pop("admin", None)
     return redirect(url_for("login"))
+@app.route("/admin")
+def admin():
+    conn = sqlite3.connect("cleanmate.db")
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
 
+    c.execute("SELECT * FROM bookings ORDER BY id DESC")
+    bookings = c.fetchall()
+
+    conn.close()
+    return render_template("admin.html", bookings=bookings)
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     import os
